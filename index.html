@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Love: Our Journey Written in the Stars</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;700&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            color: #fff;
+            background-color: #000;
+        }
+        #universe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+        #title {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 20px;
+            opacity: 0;
+        }
+        #journey-text {
+            font-size: 1.5em;
+            text-align: center;
+            max-width: 80%;
+            margin-bottom: 20px;
+            opacity: 0;
+        }
+        #start-journey {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: auto;
+        }
+        #start-journey:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        .memory-text {
+            position: absolute;
+            font-size: 1.2em;
+            padding: 10px;
+            background-color: rgba(0,0,0,0.7);
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="universe"></div>
+    <div id="ui-overlay">
+        <h1 id="title">Cosmic Love: Our Journey Written in the Stars</h1>
+        <p id="journey-text">Explore the constellation of our love, where each star holds something.</p>
+        <button id="start-journey">Begin Our Cosmic Journey</button>
+    </div>
+
+    <script>
+        // Initialize Three.js scene
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('universe').appendChild(renderer.domElement);
+
+        // Create star field
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsMaterial = new THREE.PointsMaterial({color: 0xFFFFFF, size: 0.1});
+
+        const starsVertices = [];
+        for (let i = 0; i < 10000; i++) {
+            const x = (Math.random() - 0.5) * 2000;
+            const y = (Math.random() - 0.5) * 2000;
+            const z = (Math.random() - 0.5) * 2000;
+            starsVertices.push(x, y, z);
+        }
+
+        starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+        const starField = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(starField);
+
+        // Create love constellation
+        const constellationGeometry = new THREE.BufferGeometry();
+        const constellationMaterial = new THREE.PointsMaterial({color: 0xFF69B4, size: 0.2});
+
+        const constellationVertices = [
+            0, 0, 0,    // Center
+            1, 1, 0,    // Top right
+            -1, 1, 0,   // Top left
+            1, -1, 0,   // Bottom right
+            -1, -1, 0,  // Bottom left
+        ];
+
+        constellationGeometry.setAttribute('position', new THREE.Float32BufferAttribute(constellationVertices, 3));
+        const constellation = new THREE.Points(constellationGeometry, constellationMaterial);
+        scene.add(constellation);
+
+        // Position camera
+        camera.position.z = 5;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            starField.rotation.y += 0.0001;
+            constellation.rotation.y += 0.001;
+            renderer.render(scene, camera);
+        }
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Interactive journey
+        const memories = [
+            "Us moment",
+            "The moment I knew you were the one",
+            "My udiot vibing",
+            "A lovely day 💗",
+            "My pretty idiot"
+        ];
+
+        let currentMemoryIndex = 0;
+
+        function showMemory(index) {
+            const memory = memories[index];
+            const memoryEl = document.createElement('div');
+            memoryEl.classList.add('memory-text');
+            memoryEl.textContent = memory;
+            memoryEl.style.left = `${Math.random() * 60 + 20}%`;
+            memoryEl.style.top = `${Math.random() * 60 + 20}%`;
+            document.body.appendChild(memoryEl);
+
+            setTimeout(() => {
+                memoryEl.style.opacity = 1;
+            }, 100);
+
+            setTimeout(() => {
+                memoryEl.style.opacity = 0;
+                setTimeout(() => {
+                    memoryEl.remove();
+                }, 500);
+            }, 5000);
+        }
+
+        function startJourney() {
+            gsap.to(camera.position, {
+                z: 3,
+                duration: 2,
+                ease: "power2.inOut"
+            });
+
+            gsap.to(constellation.rotation, {
+                y: Math.PI * 2,
+                duration: 60,
+                repeat: -1,
+                ease: "none"
+            });
+
+            const interval = setInterval(() => {
+                showMemory(currentMemoryIndex);
+                currentMemoryIndex++;
+                if (currentMemoryIndex >= memories.length) {
+                    clearInterval(interval);
+                    setTimeout(endJourney, 6000);
+                }
+            }, 6000);
+        }
+
+        function endJourney() {
+            gsap.to(camera.position, {
+                z: 5,
+                duration: 2,
+                ease: "power2.inOut"
+            });
+
+            const finalMessage = document.createElement('div');
+            finalMessage.classList.add('memory-text');
+            finalMessage.style.fontSize = '2em';
+            finalMessage.textContent = "Our love is infinite, just like the universe";
+            finalMessage.style.left = '50%';
+            finalMessage.style.top = '50%';
+            finalMessage.style.transform = 'translate(-50%, -50%)';
+            document.body.appendChild(finalMessage);
+
+            setTimeout(() => {
+                finalMessage.style.opacity = 1;
+            }, 100);
+        }
+
+        // Initialize UI
+        document.getElementById('start-journey').addEventListener('click', startJourney);
+
+        gsap.to('#title', {opacity: 1, duration: 2, delay: 0.5});
+        gsap.to('#journey-text', {opacity: 1, duration: 2, delay: 1.5});
+        gsap.to('#start-journey', {opacity: 1, duration: 2, delay: 2.5});
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
